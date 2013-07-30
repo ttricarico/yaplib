@@ -31,7 +31,7 @@ class Router {
     // anything that echo's will do so here
     $response = call_user_func_array($route['callback'], $route['arguments']);
 
-    if ($response['json'] === true)  {
+    if ($route['json'] === true)  {
       $response = json_encode($response);
       if (isset($_GET['callback'])) { // jsonp
         $response = "{$_GET['callback']}($response)";
