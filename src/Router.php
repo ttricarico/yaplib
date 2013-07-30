@@ -77,7 +77,7 @@ class Router {
     throw new Exception('Could not find route ' . $path);
   }
 
-  private function addRoute($path, $callback, $method) {
+  private function addRoute($path, $callback, $method, $json) {
     $this->routes[] = array(  'httpMethod'=>$method, 
                               'path'=>$path, 
                               'callback'=>$callback,
