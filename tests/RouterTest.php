@@ -28,7 +28,13 @@ class RouterTest extends PHPUnit_Framework_TestCase {
   }
   public function testPrivateRoutes() {
     $router = new Router();
-    $this->assertNotSame($router->getRouteTable(), $router->getRouteTable());
+    $this->assertSame($router->getRouteTable(), $router->getRouteTable());
+    $table = $router->getRouteTable();
+    $table['hi']='hi';
+    $this->assertNotSame($table, $router->getRouteTable());
+    $this->assertCount(0, $router->getRouteTable());
+    unset($table);
+    $this->assertNotSame($table, $router->getRouteTable());
   }
 
 } 
