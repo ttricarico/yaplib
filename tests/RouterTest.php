@@ -3,14 +3,6 @@ require_once "../src/Router.php";
 
 class RouterTest extends PHPUnit_Framework_TestCase {
 
-  public function setUp() {
-
-  }
-
-  public function tearDown()  {
-
-  }
-  
   public static function callback() {
     return "Hello";
   }
@@ -33,6 +25,14 @@ class RouterTest extends PHPUnit_Framework_TestCase {
   public function testException() {
     $router = new Router();
     $router->run('/asjdhasd', Router::httpGet);
+  }
+  public function testPrivateRoutes() {
+    $router = new Router();
+    $this->assertSame($router->getRouteTable(), $router->getRouteTable());
+    $table = $router->getRouteTable();
+    $table['hi']='hi';
+    $this->assertNotSame($table, $router->getRouteTable());
+    $this->assertCount(0, $router->getRouteTable());
   }
 
 } 
