@@ -32,9 +32,7 @@ class RouterTest extends PHPUnit_Framework_TestCase {
     $table = $router->getRouteTable();
     $table['hi']='hi';
     $this->assertNotSame($table, $router->getRouteTable());
-    unset($table);
     $this->assertCount(0, $router->getRouteTable());
-    $this->assertNull($table);
   }
 
 } 
