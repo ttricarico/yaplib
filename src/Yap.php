@@ -16,7 +16,7 @@ class Yap {
       manifest/dependency framework of some kind for yap
       and other php files might be nice
   */
-  public static function load()  {
+  public function load()  {
     $args = func_get_args();
     if (!empty($args))  {
       foreach($args as $a)  {
