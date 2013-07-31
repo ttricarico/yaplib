@@ -28,8 +28,15 @@ class Router {
     }
 
     $route = $this->getRoute($path, $httpMethod);
-    // anything that echo's will do so here
+    // anything that echo's will be buffered
+    // need to decide a common workflow/model for 
+    // 'echo' vs. 'return'
+    ob_start();
     $response = call_user_func_array($route['callback'], $route['arguments']);
+    $data = ob_get_contents();
+    ob_end_clean();
+
+    // Could call prepared header functions here before callback output
 
     if ($route['json'] === true)  {
       $response = json_encode($response);
@@ -40,6 +47,7 @@ class Router {
       echo $response;
     }
     else {
+      echo $data;
       return $response;
     }
   }
