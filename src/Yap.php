@@ -22,7 +22,7 @@ class Yap {
       foreach($args as $a)  {
         $file = $a;
         if(in_array($a, self::$modules))  {
-          $file = $path . $a . ".php";
+          $file = $this->path . $a . ".php";
         }
         require_once($file);
       }
