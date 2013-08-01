@@ -1,0 +1,7 @@
+{
+  "name":"Router",
+  "description":"A REST request router",
+  "src":["Router.php"],
+  "dependencies":[],
+  "options":[]
+}
