@@ -1,5 +1,7 @@
 <?php
-include_once('../../src/Router.php');
+include_once('../../src/Yap.php');
+$yap = new Yap('../../src/');
+$yap->load('Router');
 
 function helloworld() {
   echo "hi\n";
