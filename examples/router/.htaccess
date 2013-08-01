@@ -1,0 +1,9 @@
+# Rewrite allows requests to be routed through the index.php application
+RewriteEngine on
+# These allow static files that match a request to be served normally
+RewriteCond %{REQUEST_FILENAME} !-f 
+RewriteCond %{REQUEST_FILENAME} !-d
+# __route__ is the key for the Router to match regular expressions
+RewriteRule ^(.*)\?*$ index.php?__route__=/$1 [L,QSA]
+# Set this if your application is not in the root of the webserver
+#RewriteBase <path> 
