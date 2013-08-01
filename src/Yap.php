@@ -1,10 +1,12 @@
 <?php
 class Yap {
+  const MANIFEST = "manifest.json";
   private $path;
-  private static $modules = array('Router');
+  private static $modules = array();
 
   public function __construct($path)  {
     $this->path = $path;
+    $this->readManifests();
   }
 
   public function getPath() {
@@ -20,13 +22,38 @@ class Yap {
     $args = func_get_args();
     if (!empty($args))  {
       foreach($args as $a)  {
-        $file = $a;
-        if(in_array($a, self::$modules))  {
-          $file = $this->path . $a . ".php";
+        if(array_key_exists($a, self::$modules))  {
+          $sources = self::$modules[$a];
+          foreach ($sources as $s)  {
+            require_once($s);
+          }
         }
-        require_once($file);
       }
     }
   }
 
+  private function readManifests()  {
+    $dirs = self::getDirs($this->path);
+    foreach($dirs as $d)  {
+      $manifest = json_decode(file_get_contents($d .'/'. self::MANIFEST),true);
+      $modname = $manifest["name"];
+      self::$modules[$modname] = $manifest["src"];
+      foreach(self::$modules[$modname] as &$s) {
+        $s = $d . '/' . $s;
+      }
+    }
+  }
+
+  private static function getDirs($path)  {
+    $files = scandir($path);
+    $dirs = array();
+    foreach($files as $f) {
+      $np = $path . $f;
+      if ($f === "." or $f === "..") continue;
+      if (is_dir($np)) {
+        $dirs[] = $np;
+      }
+    }
+    return $dirs;
+  }
 }

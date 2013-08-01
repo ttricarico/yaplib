@@ -1,7 +1,12 @@
 <?php
-require_once "../src/Router.php";
+require_once "../src/Yap.php";
 
 class RouterTest extends PHPUnit_Framework_TestCase {
+
+  protected function setUp()  {
+    $yap = new Yap("../src/");
+    $yap->load('Router');
+  }
 
   public static function callback() {
     return "Hello";
