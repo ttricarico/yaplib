@@ -41,8 +41,9 @@ class RouterTest extends PHPUnit_Framework_TestCase {
   }
 
   public function testYapSingleton()  {
+    yap('Router')->get('/', array('RouterTest','callback'));
     $router = yap('Router');
-    $this->assertEquals(0, count($router->getRouteTable()), "Invalid Route Table");
+    $this->assertEquals(1, count($router->getRouteTable()), "Invalid Route Table");
   }
 
 } 

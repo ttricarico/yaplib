@@ -71,18 +71,22 @@ function yap($module=null) {
   if (!$yap)  {
     $yap = new Yap();
   }
-  if (!$mods) {
+  if ($mods === null) {
     $mods = array();
   }
   if ($module === null) {
     return $yap;
   }
+  // autoload module
   if(!in_array($module, Yap::$loaded_modules)) {
     echo "hi" . $module;
     if (array_key_exists($module, Yap::$availible_modules)) {
       $yap->load($module);
-      $mods[$module] = new $module();
     }
+  }
+  // create a module object
+  if(!array_key_exists($module, $mods))  {
+      $mods["$module"] = new $module();
   }
   return $mods["$module"];
 }
