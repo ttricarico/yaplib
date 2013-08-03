@@ -5,7 +5,6 @@ yet another php library
 
 What it is
 ----------
-yaplib is a library of shims to provide easy, conistant access to php resources.  It aims to implement REST routing, simple database connections, and more.  It is not a web framework: it does not provide an orginzational model for your application.  It is inspired from [Epiphany], [expressjs], and a desire to have a simple, consistent php interface for web development.
+yaplib is a library of shims to provide easy, conistant access to php resources.  It aims to implement REST routing, simple database connections, and more.  It is not a web framework: it does not provide an orginzational model for your application.
 
-[epiphany]: http://github.com/jmathai/epiphany
-[expressjs]: http://expressjs.com/
+yaplib is created to satisfy the desire to have a simple, consistent php interface for web development.  It is currently in pre-alpha stages, interfaces are very likely to change as use cases and tests are explored.
