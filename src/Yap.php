@@ -2,10 +2,16 @@
 class Yap {
   const MANIFEST = "manifest.json";
   private $path;
-  private static $modules = array();
+  public static $availible_modules = array();
+  public static $loaded_modules = array();
 
-  public function __construct($path)  {
-    $this->path = $path;
+  public function __construct($path=null)  {
+    if($path) {
+      $this->path = $path;
+    }
+    else  {
+      $this->path = dirname(__FILE__) . '/';
+    }
     $this->readManifests();
   }
 
@@ -22,8 +28,10 @@ class Yap {
     $args = func_get_args();
     if (!empty($args))  {
       foreach($args as $a)  {
-        if(array_key_exists($a, self::$modules))  {
-          $sources = self::$modules[$a];
+        // load if availible and not already loaded
+        if((array_key_exists($a, self::$availible_modules)) and (!in_array($a,self::$loaded_modules)))  {
+          $sources = self::$availible_modules[$a];
+          self::$loaded_modules[] = $a;
           foreach ($sources as $s)  {
             require_once($s);
           }
@@ -37,8 +45,8 @@ class Yap {
     foreach($dirs as $d)  {
       $manifest = json_decode(file_get_contents($d .'/'. self::MANIFEST),true);
       $modname = $manifest["name"];
-      self::$modules[$modname] = $manifest["src"];
-      foreach(self::$modules[$modname] as &$s) {
+      self::$availible_modules[$modname] = $manifest["src"];
+      foreach(self::$availible_modules[$modname] as &$s) {
         $s = $d . '/' . $s;
       }
     }
@@ -56,4 +64,29 @@ class Yap {
     }
     return $dirs;
   }
+}
+
+function yap($module=null) {
+  static $yap;
+  static $mods;
+  if ($yap === null)  {
+    $yap = new Yap();
+  }
+  if ($mods === null) {
+    $mods = array();
+  }
+  if ($module === null) {
+    return $yap;
+  }
+  // autoload module
+  if(!in_array($module, Yap::$loaded_modules)) {
+    if (array_key_exists($module, Yap::$availible_modules)) {
+      $yap->load($module);
+    }
+  }
+  // create a module object
+  if(!array_key_exists($module, $mods))  {
+      $mods["$module"] = new $module();
+  }
+  return $mods["$module"];
 }
