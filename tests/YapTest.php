@@ -17,4 +17,13 @@ class YapTest extends PHPUnit_Framework_TestCase {
     $this->assertEquals($path1, $path2, "Path malformed");
   }
 
+  public function testYapSingleton()  {
+    $yap = yap();
+    $router1 = yap('Router');
+    $this->assertEquals(1, count(Yap::$loaded_modules));
+    $router2 = yap('Router');
+    $this->assertEquals(1, count(Yap::$loaded_modules));
+    $this->assertSame($router1,$router2);
+  }
+
 } 
