@@ -88,8 +88,5 @@ function yap($module=null) {
   if(!array_key_exists($module, $mods))  {
       $mods["$module"] = new $module();
   }
-  echo "=====\n";
-  print_r(Yap::$loaded_modules);
-  echo count(Yap::$loaded_modules);
   return $mods["$module"];
 }
