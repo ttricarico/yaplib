@@ -84,5 +84,5 @@ function yap($module=null) {
       $mods[$module] = new $module();
     }
   }
-  return $mods[$module];
+  return $mods["$module"];
 }
