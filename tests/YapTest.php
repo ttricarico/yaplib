@@ -18,7 +18,6 @@ class YapTest extends PHPUnit_Framework_TestCase {
   }
 
   public function testYapSingleton()  {
-    $yap = yap();
     $router1 = yap('Router');
     $this->assertEquals(1, count(Yap::$loaded_modules));
     $router2 = yap('Router');

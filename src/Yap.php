@@ -28,7 +28,8 @@ class Yap {
     $args = func_get_args();
     if (!empty($args))  {
       foreach($args as $a)  {
-        if(array_key_exists($a, self::$availible_modules))  {
+        // load if availible and not already loaded
+        if((array_key_exists($a, self::$availible_modules)) and (!in_array($a,self::$loaded_modules)))  {
           $sources = self::$availible_modules[$a];
           self::$loaded_modules[] = $a;
           foreach ($sources as $s)  {
@@ -68,7 +69,7 @@ class Yap {
 function yap($module=null) {
   static $yap;
   static $mods;
-  if (!$yap)  {
+  if ($yap === null)  {
     $yap = new Yap();
   }
   if ($mods === null) {
@@ -79,7 +80,6 @@ function yap($module=null) {
   }
   // autoload module
   if(!in_array($module, Yap::$loaded_modules)) {
-    echo "hi" . $module;
     if (array_key_exists($module, Yap::$availible_modules)) {
       $yap->load($module);
     }
@@ -88,5 +88,8 @@ function yap($module=null) {
   if(!array_key_exists($module, $mods))  {
       $mods["$module"] = new $module();
   }
+  echo "=====\n";
+  print_r(Yap::$loaded_modules);
+  echo count(Yap::$loaded_modules);
   return $mods["$module"];
 }
