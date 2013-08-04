@@ -1,9 +1,9 @@
 {
-  "name":"Router",
+  "name":"YapSession",
   "description":"A REST request router",
   "author":"Yaplib Team",
   "version":"1.0",
-  "src":["Router.php"],
+  "src":["Session.php"],
   "dependencies":[],
   "options":[]
 }
