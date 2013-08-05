@@ -1,18 +1,17 @@
 <?php
-require_once("SessionInterface.php");
 class Session implements SessionInterface {
   private $session;
   private $testmode = false;
 	function __construct() {
     if (!isset($_SESSION)) {
       $session = array();
-      $testmode = true;
+      $this->testmode = true;
     }
     else {
 		  if(!session_id()) {
 			  session_start();
-        $this->session = &$_SESSION;
       }
+      $this->session = &$_SESSION;
     }
 	}
 	
@@ -33,7 +32,7 @@ class Session implements SessionInterface {
 		unset($this->session[$key]);
 	}
 	public function end() {
-    if($testmode === false) {
+    if($this->testmode === false) {
 		  session_destroy();
     }
     else {
