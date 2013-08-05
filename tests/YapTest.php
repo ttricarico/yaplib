@@ -5,8 +5,8 @@ class YapTest extends PHPUnit_Framework_TestCase {
 
   public function testLoader()  {
     $yap = new Yap('../src/');
-    $yap->load('Router');
-    $router = new Router();
+    $yap->load('YapRouter');
+    $router = new YapRouter();
     $this->assertEquals(0, count($router->getRouteTable()), "Router was not loaded");
   }
 
@@ -18,9 +18,9 @@ class YapTest extends PHPUnit_Framework_TestCase {
   }
 
   public function testYapSingleton()  {
-    $router1 = yap('Router');
+    $router1 = yap('YapRouter');
     $this->assertEquals(1, count(Yap::$loaded_modules));
-    $router2 = yap('Router');
+    $router2 = yap('YapRouter');
     $this->assertEquals(1, count(Yap::$loaded_modules));
     $this->assertSame($router1,$router2);
   }

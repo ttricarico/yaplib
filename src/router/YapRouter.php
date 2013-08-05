@@ -1,5 +1,5 @@
 <?php 
-class Router {
+class YapRouter implements RouterInterface {
   const httpGet = 'GET';
   const httpPost = 'POST';
   const httpPut = 'PUT';
@@ -17,6 +17,20 @@ class Router {
 
   public function get($path, $callback, $json = false)  {
     $this->addRoute($path, $callback, self::httpGet, $json);
+  }
+
+  public function post($path, $callback, $json = false) {
+    $this->addRoute($path, $callback, self::httpPost, $json);
+  }
+
+
+  public function put($path, $callback, $json = false) {
+    $this->addRoute($path, $callback, self::httpPut, $json);
+  }
+
+
+  public function delete($path, $callback, $json = false) {
+    $this->addRoute($path, $callback, self::httpDelete, $json);
   }
 
   public function run($path = false, $httpMethod = null) {

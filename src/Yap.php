@@ -12,6 +12,7 @@ class Yap {
     else  {
       $this->path = dirname(__FILE__) . '/';
     }
+    $this->readInterfaces();
     $this->readManifests();
   }
 
@@ -40,14 +41,25 @@ class Yap {
     }
   }
 
+  private function readInterfaces() {
+    $interfaceDir = $this->path . "Interfaces/";
+    $files = glob($interfaceDir . '*.php');
+    foreach($files as $i) {
+      require_once($i);
+    }
+  }
+
   private function readManifests()  {
     $dirs = self::getDirs($this->path);
     foreach($dirs as $d)  {
-      $manifest = json_decode(file_get_contents($d .'/'. self::MANIFEST),true);
-      $modname = $manifest["name"];
-      self::$availible_modules[$modname] = $manifest["src"];
-      foreach(self::$availible_modules[$modname] as &$s) {
-        $s = $d . '/' . $s;
+      $manfile = $d . '/' . self::MANIFEST;
+      if (file_exists($manfile) === true)  {
+        $manifest = json_decode(file_get_contents($d .'/'. self::MANIFEST),true);
+        $modname = $manifest["name"];
+        self::$availible_modules[$modname] = $manifest["src"];
+        foreach(self::$availible_modules[$modname] as &$s) {
+          $s = $d . '/' . $s;
+        }
       }
     }
   }

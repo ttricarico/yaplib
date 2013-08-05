@@ -1,5 +1,5 @@
 <?php
-class Session implements SessionInterface {
+class YapSession implements SessionInterface {
   private $session;
   private $testmode = false;
 	function __construct() {
