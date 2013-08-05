@@ -3,7 +3,7 @@ ini_set('display_errors', 1);
 
 include_once('../../src/Yap.php');
 
-$session = yap('YapSession');
+$session = yap('Session');
 
 if($session->get('counter')) 
 	$counter = $session->get('counter') + 1;

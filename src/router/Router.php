@@ -94,10 +94,3 @@ class Router {
   }
 }
 
-function getRouter()  {
-  static $router;
-  if (!$router) {
-    $router = new Router();
-  }
-  return $router;
-}
