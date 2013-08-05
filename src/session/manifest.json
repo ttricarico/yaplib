@@ -3,7 +3,7 @@
   "description":"A shim for sessions",
   "author":"Yaplib Team",
   "version":"1.0",
-  "src":["Session.php"],
+  "src":["YapSession.php"],
   "dependencies":[],
   "options":[]
 }

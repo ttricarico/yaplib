@@ -8,6 +8,10 @@ class RouterTest extends PHPUnit_Framework_TestCase {
     $yap->load('YapRouter');
   }
 
+  protected function tearDown() {
+    unset($yap);
+  }
+
   public static function callback() {
     return "Hello";
   }
