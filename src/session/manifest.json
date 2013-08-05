@@ -1,0 +1,9 @@
+{
+  "name":"Session",
+  "description":"A shim for sessions",
+  "author":"Yaplib Team",
+  "version":"1.0",
+  "src":["SessionInterface.php","Session.php"],
+  "dependencies":[],
+  "options":[]
+}
