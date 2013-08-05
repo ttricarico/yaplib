@@ -1,30 +1,44 @@
 <?php
-
-class Session implements YapSessionInterface {
-	
+require_once("SessionInterface.php");
+class Session implements SessionInterface {
+  private $session;
+  private $testmode = false;
 	function __construct() {
-		if(!session_id())
-			session_start();
+    if (!isset($_SESSION)) {
+      $session = array();
+      $testmode = true;
+    }
+    else {
+		  if(!session_id()) {
+			  session_start();
+        $this->session = &$_SESSION;
+      }
+    }
 	}
 	
 	public function get($key) {
-		if(empty($_SESSION[$key]) || !isset($_SESSION[$key]))
+		if(empty($this->session[$key]))
 			return false;
 		else
-			return $_SESSION[$key];
+			return $this->session[$key];
 	}
 	public function set($key, $value) {
-		$_SESSION[$key] = $value;
+		$this->session[$key] = $value;
 		return $value;
 	}
 	public function delete($key) {
-		if(!isset($_SESSION[$key]))
+		if(!isset($this->session[$key]))
 			return false;
 		
-		unset($_SESSION[$key]);
+		unset($this->session[$key]);
 	}
 	public function end() {
-		session_destroy();
+    if($testmode === false) {
+		  session_destroy();
+    }
+    else {
+      unset($this->session);
+    }
 	}
 	
 }
