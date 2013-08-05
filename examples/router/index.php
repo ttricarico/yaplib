@@ -5,7 +5,7 @@ function helloworld() {
   echo "hi\n";
 }
 
-$router = yap('Router');
+$router = yap('YapRouter');
  
 $router->get('/', 'helloworld');
 
