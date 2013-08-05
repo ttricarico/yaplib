@@ -1,67 +1,37 @@
 <?php
-
-class YapSession {
-
-	const SESSION_COOKIE = 'YapSession';
-	const PHP = 'PHP';
-	/** NOT YET IMPLEMENTED **/
-	//const Memcached = 'Memcached';
-	//const APC = 'APC';
-	
-	private static $SessionFile;
-	private static $SessionMethod;
-	private static $SessionInstance;
-	
+class Session implements SessionInterface {
+  private $session;
+  private $testmode = false;
 	function __construct() {
-		session_start();
+    if(!session_id()) {
+      session_start();
+    }
+    $this->session = &$_SESSION;
 	}
 	
 	public function get($key) {
-		if(empty($_SESSION[$key]) || !isset($_SESSION[$key]))
+		if(empty($this->session[$key]))
 			return false;
 		else
-			return $_SESSION[$key];
+			return $this->session[$key];
 	}
 	public function set($key, $value) {
-		$_SESSION[$key] = $value;
+		$this->session[$key] = $value;
 		return $value;
 	}
 	public function delete($key) {
-		if(!isset($_SESSION[$key]))
+		if(!isset($this->session[$key]))
 			return false;
 		
-		unset($_SESSION[$key]);
+		unset($this->session[$key]);
 	}
 	public function end() {
-		session_destroy();
+    if($this->testmode === false) {
+		  session_destroy();
+    }
+    else {
+      unset($this->session);
+    }
 	}
 	
-	
-	
-	// get the singleton instance
-	public static function getInstance() {
-		if($SessionFile == 'SessionPHP.php') {
-			if(!$SessionInstance) {
-				$SessionInstance = new YapSession(self::PHP);
-				return $SessionInstance;
-			}
-			else {
-				return $SessionInstance;
-			}
-		}
-		else {
-			throw new Exception('Unable to load sessionizer');
-		}
-	}
-}
-
-interface YapSessionInterface {
-	public function get($key);
-	public function set($key, $value);
-	public function delete($key);
-	public function end($key);
-}
-
-function getSession() {
-	return YapSession::getInstance();
 }

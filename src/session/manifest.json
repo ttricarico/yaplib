@@ -1,9 +1,9 @@
 {
-  "name":"YapSession",
-  "description":"A REST request router",
+  "name":"Session",
+  "description":"A shim for sessions",
   "author":"Yaplib Team",
   "version":"1.0",
-  "src":["Session.php"],
+  "src":["SessionInterface.php","Session.php"],
   "dependencies":[],
   "options":[]
 }
