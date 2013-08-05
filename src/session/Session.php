@@ -3,16 +3,10 @@ class Session implements SessionInterface {
   private $session;
   private $testmode = false;
 	function __construct() {
-    if (!isset($_SESSION)) {
-      $session = array();
-      $this->testmode = true;
+    if(!session_id()) {
+      session_start();
     }
-    else {
-		  if(!session_id()) {
-			  session_start();
-      }
-      $this->session = &$_SESSION;
-    }
+    $this->session = &$_SESSION;
 	}
 	
 	public function get($key) {
