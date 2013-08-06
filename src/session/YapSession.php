@@ -3,7 +3,7 @@ class YapSession implements SessionInterface {
   private $session;
   private $testmode = false;
 	function __construct() {
-    if(!session_id()) {
+		if(!session_id()) {
       session_start();
     }
     $this->session = &$_SESSION;

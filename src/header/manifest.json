@@ -1,0 +1,9 @@
+{
+  "name":"YapHeader",
+  "description":"A shim to make easier header calls",
+  "author":"Yaplib Team",
+  "version":"1.0",
+  "src":["YapHeader.php"],
+  "dependencies":[],
+  "options":[]
+}

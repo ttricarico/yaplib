@@ -1,0 +1,9 @@
+{
+  "name":"YapCookie",
+  "description":"A shim for delicious cookies",
+  "author":"Yaplib Team",
+  "version":"1.0",
+  "src":["YapCookie.php"],
+  "dependencies":[],
+  "options":[]
+}
