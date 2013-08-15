@@ -1,0 +1,9 @@
+{
+  "name":"YapMySQL",
+  "description":"Layer of abstraction between you and MySQL",
+  "author":"Yaplib Team",
+  "version":"1.0",
+  "src":["YapMySQL.php"],
+  "dependencies":[],
+  "options":[]
+}
