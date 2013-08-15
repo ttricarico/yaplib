@@ -1,8 +1,9 @@
 <?php
 
 interface DatabaseInterface {
-	public function one();	//select one row
-	public function many(); //select many rows
-	public function execute();	// execute insert/update, etc
+	public function all($table);
+	public function one($query, $params);	//select one row
+	public function many($query, $params); //select many rows
+	public function run($query, $params);	// execute insert/update, etc
 	public function lastId(); //retrieve last inserted id
 }
