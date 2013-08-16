@@ -4,7 +4,10 @@ class Yap {
   private $path;
   public static $availible_modules = array();
   public static $loaded_modules = array();
-
+  public $registered = array();
+  
+  public static $instance = null;
+  
   public function __construct($path=null)  {
     if($path) {
       $this->path = $path;
@@ -76,29 +79,74 @@ class Yap {
     }
     return $dirs;
   }
+  
+  public function register($instance_name, $object) {
+    if(array_key_exists($instance_name, $this->registered))
+      return false;
+    
+    $this->registered[$instance_name] = $object;
+  }
+  
+  public function unregister($instance_name) {
+    if(!array_key_exists($instance_name))
+      return false;
+    
+    unset($this->registered[$instance_name]);
+    return true;
+  }
+  
 }
 
-function yap($module=null) {
-  static $yap;
+/** load up modules **/
+function yapload($module=null, $registeredname = false) {
+  
   static $mods;
-  if ($yap === null)  {
-    $yap = new Yap();
+  if (Yap::$instance === null)  {
+    Yap::$instance = new Yap();
   }
   if ($mods === null) {
     $mods = array();
   }
   if ($module === null) {
-    return $yap;
+    return Yap::$instance;
   }
   // autoload module
   if(!in_array($module, Yap::$loaded_modules)) {
     if (array_key_exists($module, Yap::$availible_modules)) {
-      $yap->load($module);
+      Yap::$instance->load($module);
     }
   }
-  // create a module object
-  if(!array_key_exists($module, $mods))  {
+    
+  if(!$registeredname) {
+    
+    // create a module object
+    if(!array_key_exists($module, $mods))  
       $mods["$module"] = new $module();
+    
+    return $mods[$module];
   }
-  return $mods["$module"];
+  elseif($registeredname){
+    //register that object with yaplib if $registeredname is set
+    if(!array_key_exists($registeredname, $mods)) {
+      Yap::$instance->register($registeredname, new $module());  
+      $mods["$module"] = new $module();
+    }
+    
+    return $mods[$module];    
+  }
+}
+
+
+function yap($module=null) {
+  
+  if (Yap::$instance === null)  {
+    Yap::$instance = new Yap();
+    return Yap::$instance;
+  }
+  
+  if(!array_key_exists($module, Yap::$instance->registered)) 
+    return false;
+  
+  return Yap::$instance->registered[$module];
+  
 }
