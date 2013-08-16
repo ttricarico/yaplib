@@ -76,6 +76,9 @@ class Yap {
   }
   
   public function getInstance($name)  {
+    if(!array_key_exists($name, $this->registered_modules)) {
+      return null;
+    }
     return $this->registered_modules[$name];
   }
 
@@ -98,7 +101,7 @@ class Yap {
 function yap($module=null, $name=null) {
   static $yap;
   
-  if ($yap  === null)  {
+  if ($yap === null)  {
     $yap = new Yap();
   }
 
@@ -123,9 +126,9 @@ function yap($module=null, $name=null) {
   // we are not naming the instance,
   // so we are getting a 'singleton' instance
   // we'll just name it by the class name
-  $object = getInstance($module);
+  $object = $yap->getInstance($module);
   if ($object === null) {
-    $yap->register($module, new $module();
+    $yap->register($module, new $module());
   } 
  
   return $object;
