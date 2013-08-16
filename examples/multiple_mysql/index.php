@@ -8,10 +8,10 @@
  * Or, you can just copy the table data into your own database.
  */
 
-require('./YapLib/Yap.php');
+require('../../src/Yap.php');
 
-yapload('YapMySQL', 'mysql1'); //initialize mysql engine
-yapload('YapMySQL', 'mysql2');
+yap('YapMySQL', 'mysql1'); //initialize mysql engine
+yap('YapMySQL', 'mysql2');
 
 echo 'mysql1:<br/>';
 var_dump(yap('mysql1'));

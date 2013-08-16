@@ -6,7 +6,7 @@ function helloworld() {
 }
 
 $router = yap('YapRouter');
- 
+
 $router->get('/', 'helloworld');
 
 print_r($router->getRouteTable());
