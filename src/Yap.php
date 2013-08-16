@@ -4,7 +4,8 @@ class Yap {
   private $path;
   public static $availible_modules = array();
   public static $loaded_modules = array();
-
+  public $registered_modules;
+  
   public function __construct($path=null)  {
     if($path) {
       $this->path = $path;
@@ -14,18 +15,15 @@ class Yap {
     }
     $this->readInterfaces();
     $this->readManifests();
+    $this->registered_modules = array();
   }
 
   public function getPath() {
     return $this->path;
   }
 
-  /* this might be a cool way to load yap modules
-      and other php files.  providing a minimal 
-      manifest/dependency framework of some kind for yap
-      and other php files might be nice
-  */
-  public function load()  {
+  // load the files specified by the manifest
+  public function load(/*named modules*/)  {
     $args = func_get_args();
     if (!empty($args))  {
       foreach($args as $a)  {
@@ -76,29 +74,62 @@ class Yap {
     }
     return $dirs;
   }
+  
+  public function getInstance($name)  {
+    if(!array_key_exists($name, $this->registered_modules)) {
+      return null;
+    }
+    return $this->registered_modules[$name];
+  }
+
+  public function register($instance_name, $object) {
+    if(!array_key_exists($instance_name, $this->registered_modules))
+      $this->registered_modules[$instance_name] = $object;
+    return $object;
+  }
+  
+  public function unregister($instance_name) {
+    if(!array_key_exists($instance_name, $this->registered_modules))
+      return false;
+    
+    unset($this->registered[$instance_name]);
+    return true;
+  }
+  
 }
 
-function yap($module=null) {
+function yap($module=null, $name=null) {
   static $yap;
-  static $mods;
+  
   if ($yap === null)  {
     $yap = new Yap();
   }
-  if ($mods === null) {
-    $mods = array();
-  }
+
+  // if just yap() was called, just give yap.
   if ($module === null) {
     return $yap;
   }
+
   // autoload module
   if(!in_array($module, Yap::$loaded_modules)) {
     if (array_key_exists($module, Yap::$availible_modules)) {
       $yap->load($module);
     }
   }
-  // create a module object
-  if(!array_key_exists($module, $mods))  {
-      $mods["$module"] = new $module();
+  
+  // if we are naming a new instance
+  if($name !== null) {
+    $yap->register($name, new $module());
+    return $yap->getInstance($name);
   }
-  return $mods["$module"];
+
+  // we are not naming the instance,
+  // so we are getting a 'singleton' instance
+  // we'll just name it by the class name
+  $object = $yap->getInstance($module);
+  if ($object === null) {
+    $object = $yap->register($module, new $module());
+  } 
+ 
+  return $object;
 }
