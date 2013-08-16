@@ -92,7 +92,7 @@ class Yap {
     if(!array_key_exists($instance_name, $this->registered_modules))
       return false;
     
-    unset($this->registered[$instance_name]);
+    unset($this->registered_modules[$instance_name]);
     return true;
   }
   
