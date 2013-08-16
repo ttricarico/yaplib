@@ -8,7 +8,7 @@
  * Or, you can just copy the table data into your own database.
  */
 
-require('./YapLib/Yap.php');
+require('../../src/Yap.php');
 
 $mysql = yap('YapMySQL'); //initialize mysql engine
 
