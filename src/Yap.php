@@ -128,7 +128,7 @@ function yap($module=null, $name=null) {
   // we'll just name it by the class name
   $object = $yap->getInstance($module);
   if ($object === null) {
-    $yap->register($module, new $module());
+    $object = $yap->register($module, new $module());
   } 
  
   return $object;
