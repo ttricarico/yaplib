@@ -1,7 +1,7 @@
 <?php
 require_once "../src/Yap.php";
 
-class YapTest extends PHPUnit_Framework_TestCase {
+class EnvironmentTest extends PHPUnit_Framework_TestCase {
 
   public function testProduction()  {
     yap('YapEnv')->setPro();
