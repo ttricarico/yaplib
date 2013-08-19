@@ -1,0 +1,9 @@
+{
+  "name":"YapHTTP",
+  "description":"Wrapper for http requests",
+  "author":"Yaplib Team",
+  "version":"1.0",
+  "src":["YapHTTP.php"],
+  "dependencies":[],
+  "options":[]
+}
