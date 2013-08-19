@@ -1,0 +1,9 @@
+{
+  "name":"YapEnv",
+  "description":"A production/development switcher",
+  "author":"Yaplib Team",
+  "version":"1.0",
+  "src":["YapEnv.php"],
+  "dependencies":[],
+  "options":[]
+}
