@@ -1,113 +1,103 @@
 <?php
 
 class YapHTTP {
-		
-	const GET = 'GET';
-	const POST = 'POST';
-	const PUT = 'PUT';
-	const DELETE = 'DELETE';
-	/** not implemented
-	const HEAD = 'HEAD'; 
-	const OPTIONS = 'OPTIONS';
-	**/
-	
-	private $ch;
-	private $url;
-	private $options = array();
-	private $method;
-	
-	
-	/**
-	 * $option = array( array({curl option}, {option value}),....)
-	 */
-	public function __construct($url, $method = self::GET, $options = array(), $return = true) {
-		$this->ch = curl_init();
-		if(!empty($options)) {
-			$this->options = $options;
-			foreach($this->options as $o) {
-				curl_setopt($this->ch, $o[0], $o[1]);
-			}
-		}
-		if($return) {
-			curl_setopt($this->ch, CURLOPT_RETURNTRANSFER, true);
-		}
-		else {
-			curl_setopt($this->ch, CURLOPT_RETURNTRANSFER, false);
-		}
-		$this->url = $url;
-		$this->method = $method;
-		
-		return $this->ch;
-	}
-	
-	public function setMethod($method = false) {
-		if(!$method) {
-			throw new Exception('Must define an HTTP method (get, post, put, delete)');
-		}
-		$this->method = $method;
-	}
-	public function setUrl($url = false) {
-		if(!$url) {
-			throw new Exception('Must define a url');
-		}
-		$this->url = $url;
-	}
-	
-	public function execute() {
-		
-		curl_setopt($this->ch, CURLOPT_URL, $this->url);
-		$this->setCURLMethod();
     
-	}
-	
-	private function setCURLMethod() {
-		if($this->method == self::GET) {
-      curl_setopt($this->ch, CURLOPT_HTTPGET, true);
-		}
-		elseif($this->method == self::POST) {
-      curl_setopt($this->ch, CURLOPT_POST, true);
-		}
-		elseif($this->method == self::PUT) {
-      curl_setopt($this->ch, CURLOPT_PUT, true);
-		}
-    elseif($this->method == self::DELETE) {
-      curl_setopt($this->ch, CURLOPT_CUSTOMREQUEST, 'DELETE');
-    }
-    else {
-      throw new Exception('Unknown HTTP method, use YapHTTP:GET, YapHTTP:POST, YapHTTP:PUT, or YapHTTP:DELETE');
-    }
-	}
+  const GET = 'GET';
+  const POST = 'POST';
   
-  public static function get($url) {
-    $stream = stream_context_create(array(
-                                        'http' => array('method'=>'GET')
-                                        )
-                                   );
-    $file = file_get_contents($url, false, $stream);
-    return $file;
+  /** not implemented
+  const PUT = 'PUT';
+  const DELETE = 'DELETE';
+  const HEAD = 'HEAD'; 
+  const OPTIONS = 'OPTIONS';
+  **/
+  
+  private $ch;
+  private $url;
+  private $options = array();
+  private $return = true;
+  
+  
+  public function __construct() {
+    $this->ch = curl_init();
   }
-  public static function post($url,$data) {
-    $stream = stream_context_create(array(
-                                        'http' => array('method'=>'POST'),
-                                        'content' => http_build_query($data))
-                                   );
-    $file = file_get_contents($url, false, $stream);
-    return $file;
+  
+  public function __destruct() {
+    curl_close($this->ch);
   }
-  public static function put($url) {
-    $stream = stream_context_create(array(
-                                        'http' => array('method'=>'PUT')
-                                        )
-                                   );
-    $file = file_get_contents($url, false, $stream);
-    return $file;
+  
+  public function setUrl($url) {
+    $this->url = $url;
   }
-  public static function delete($url) {
-    $stream = stream_context_create(array(
-                                        'http' => array('method'=>'DELETE')
-                                        )
-                                   );
-    $file = file_get_contents($url, false, $stream);
-    return $file;
+  /**
+   * $option = array( array({curl option}, {option value}),....)
+   */
+  public function addOption($option = array()) {
+    $this->options = array_merge($this->options, $option);
+    return $this->options;
   }
+  public function setReturn($return) {
+    $this->return = $return;
+  }
+  private function setOptions() {
+    foreach($this->options as $o)
+    curl_setopt($this->ch, $o[0], $o[1]);
+  }
+  private function execute() {
+    curl_setopt($this->ch, CURLOPT_RETURNTRANSFER, true);
+    try{
+      $data = curl_exec($this->ch);
+    }catch(Exception $e) {
+      //see if the url has https, if so try again with an added option
+      if(preg_match('^(http|https)://', $this->url)) {
+        //yes, i know this is dangerous
+        curl_setopt($this->ch, CURLOPT_SSL_VERIFYHOST, false);
+        curl_setopt($this->ch, CURLOPT_SSL_VERIFYPEER, false);
+        try{
+          $data = curl_exec($this->ch);
+        }catch(Exception $e) {
+          //well, it didnt work, so just return false
+          $data = false;
+          //OR THROW AN EXCEPTION!
+          throw new Exception('Get Failed, Curl Response: '.$e->getMessage());
+        }
+      }
+      throw new Exception('Get Failed, Curl Response: '.$e->getMessage());
+      $data = false;
+    }
+    
+    if($this->return)
+      return $data;
+    else
+      echo $data;
+  }
+  public function get($dataToSend = null) {
+    if($dataToSend != null) {
+      $queryString = http_build_query($dataToSend);
+      curl_setopt($this->ch, CURLOPT_URL, $this->url.'?'.$queryString);
+    }
+    else{
+      curl_setopt($this->ch, CURLOPT_URL, $this->url);
+    }
+    
+    
+    $this->setOptions();
+    curl_setopt($this->ch, CURLOPT_CUSTOMREQUEST, self::GET);
+
+    
+    return $this->execute();
+  }
+  public function post($dataToSend = null) {
+    if($dataToSend != null) {
+      curl_setopt($this->ch, CURLOPT_POSTFIELDS, $dataToSend);
+    }
+    
+    curl_setopt($this->ch, CURLOPT_URL, $this->url);
+    $this->setOptions();
+    curl_setopt($this->ch, CURLOPT_CUSTOMREQUEST, self::POST);
+    
+    return $this->execute();
+  }
+
+
 }
