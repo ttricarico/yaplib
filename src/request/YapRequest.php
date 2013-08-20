@@ -29,38 +29,38 @@ class YapRequest {
     $this->instance = null;
   }
   
-  public function setOptions($options = array()) {
-    if(!empty($options)) {
+  public function setOptions($options = null) {
+    if(!is_null($options)) {
       foreach($options as $o) {
         curl_setopt($this->ch, $o[0], $o[1]);
       }
     }
   }
   public function checkSecure($url) {
-    if(preg_match('^(http|https)://', $url)) {
+    if(preg_match('/^https/', $url)) {
       $this->setoptions(array(  //yes, i know this is dangerous
-                            array('CURLOPT_SSL_VERIFYPEER', 0),
-                            array('CURLOPT_SSL_VERIFYHOST', 0)
+                            array(CURLOPT_SSL_VERIFYPEER, 0),
+                            array(CURLOPT_SSL_VERIFYHOST, 0)
       ));
     }
   }
-  public function get($url, $dataToSend = array(), $options = array(), $return = true) {
+  public function get($url, $dataToSend = array(), $options = null, $return = true) {
     $this->ch = curl_init();
     $this->url = $url.$this->generateQueryString($dataToSend);
+	curl_setopt($this->ch, CURLOPT_URL, $this->url);
     $this->setReturn($return);
     $this->setOptions($options);
-    try{
-      curl_exec($this->ch);
-    }catch(Exception $e) {
+    $response = curl_exec($this->ch);
+    if(!$response) {
       $this->checkSecure($url);
-      try{
-        curl_exec($this->ch);
-      }
-      catch(Exception $e) {
-        throw new Exception('Could not process http, curl says: '.$e->getMessage());
+      $response = curl_exec($this->ch);
+      if(!$response) {
+        throw new Exception('Could not process request, curl responded with: '.curl_error($this->ch));	
       }
     }
+	
     curl_close($this->ch);
+	return $response;
   }
   public function post($url, $dataToSend = array(), $options = array(), $return = true) {
     $this->setReturn($return);
@@ -77,7 +77,7 @@ class YapRequest {
         if($temp != '?') {
          $temp .= '&'; 
         }
-        $temp .= $k.'='.url_encode($v);
+        $temp .= $k.'='.urlencode($v);
       }
     }
     
