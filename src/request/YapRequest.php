@@ -16,91 +16,80 @@ class YapRequest {
   private $url;
   private $options = array();
   private $return = true;
+  private $instance;
   
   
   public function __construct() {
-    $this->ch = curl_init();
+    if(!function_exists('curl_init')) {
+      throw new Exception('Curl must be installed to allow http requests. Contact your hosting provider to install curl or install it.');
+    }
+    $this->instance = md5(mt_rand());
+  }  
+  public function __destruct() {
+    $this->instance = null;
   }
   
-  public function __destruct() {
+  public function setOptions($options = array()) {
+    if(!empty($options)) {
+      foreach($options as $o) {
+        curl_setopt($this->ch, $o[0], $o[1]);
+      }
+    }
+  }
+  public function checkSecure($url) {
+    if(preg_match('^(http|https)://', $url)) {
+      $this->setoptions(array(  //yes, i know this is dangerous
+                            array('CURLOPT_SSL_VERIFYPEER', 0),
+                            array('CURLOPT_SSL_VERIFYHOST', 0)
+      ));
+    }
+  }
+  public function get($url, $dataToSend = array(), $options = array(), $return = true) {
+    $this->ch = curl_init();
+    $this->url = $url.$this->generateQueryString($dataToSend);
+    $this->setReturn($return);
+    $this->setOptions($options);
+    try{
+      curl_exec($this->ch);
+    }catch(Exception $e) {
+      $this->checkSecure($url);
+      try{
+        curl_exec($this->ch);
+      }
+      catch(Exception $e) {
+        throw new Exception('Could not process http, curl says: '.$e->getMessage());
+      }
+    }
     curl_close($this->ch);
   }
-  
-  public function setUrl($url) {
-    $this->url = $url;
+  public function post($url, $dataToSend = array(), $options = array(), $return = true) {
+    $this->setReturn($return);
   }
+
   /**
-   * $option = array( array({curl option}, {option value}),....)
+   * $dataToSend = array(key => value)
    */
-  public function addOption($option = array()) {
-    $this->options = array_merge($this->options, $option);
-    return $this->options;
-  }
-  public function setReturn($return) {
-    $this->return = $return;
-  }
-  private function setOptions() {
-    foreach($this->options as $o)
-    curl_setopt($this->ch, $o[0], $o[1]);
-  }
-  public function destroy() {
-  	$this->__destruct();
-  }
-  private function execute() {
-    curl_setopt($this->ch, CURLOPT_RETURNTRANSFER, true);
-    try{
-      $data = curl_exec($this->ch);
-    }catch(Exception $e) {
-      //see if the url has https, if so try again with an added option
-      if(preg_match('^(http|https)://', $this->url)) {
-        //yes, i know this is dangerous
-        curl_setopt($this->ch, CURLOPT_SSL_VERIFYHOST, false);
-        curl_setopt($this->ch, CURLOPT_SSL_VERIFYPEER, false);
-        try{
-          $data = curl_exec($this->ch);
-        }catch(Exception $e) {
-          //well, it didnt work, so just return false
-          $data = false;
-          //OR THROW AN EXCEPTION!
-          throw new Exception('Get Failed, Curl Response: '.$e->getMessage());
+  private function generateQueryString($dataToSend = array()) {
+    $temp = '';
+    if(!empty($dataToSend)){
+      $temp = '?';
+      foreach($dataToSend as $k=>$v) {
+        if($temp != '?') {
+         $temp .= '&'; 
         }
+        $temp .= $k.'='.url_encode($v);
       }
-      throw new Exception('Get Failed, Curl Response: '.$e->getMessage());
-      $data = false;
     }
     
-    if($this->return)
-      return $data;
+    return $temp;
+  }
+  private function generatePostFields($dataToSend = array()) {
+    
+  }
+  private function setReturn($return){
+    if($return)
+      curl_setopt($this->ch, CURLOPT_RETURNTRANSFER, true);
     else
-      echo $data;
+      curl_setopt($this->ch, CURLOPT_RETURNTRANSFER, false);
   }
-  public function get($dataToSend = null) {
-    if($dataToSend != null) {
-      $queryString = http_build_query($dataToSend);
-      curl_setopt($this->ch, CURLOPT_URL, $this->url.'?'.$queryString);
-    }
-    else{
-      curl_setopt($this->ch, CURLOPT_URL, $this->url);
-    }
-    
-    
-    $this->setOptions();
-    curl_setopt($this->ch, CURLOPT_CUSTOMREQUEST, self::GET);
-
-    
-    return $this->execute();
-  }
-  public function post($dataToSend = null) {
-    if($dataToSend != null) {
-      curl_setopt($this->ch, CURLOPT_POSTFIELDS, $dataToSend);
-    }
-    
-    curl_setopt($this->ch, CURLOPT_URL, $this->url);
-    $this->setOptions();
-    curl_setopt($this->ch, CURLOPT_CUSTOMREQUEST, self::POST);
-    
-    return $this->execute();
-  }
-
-
 }
