@@ -1,6 +1,6 @@
 <?php
 
-class YapHTTP {
+class YapRequest {
     
   const GET = 'GET';
   const POST = 'POST';

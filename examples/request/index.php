@@ -1,9 +1,9 @@
 <?php
 
 
-require('./YapLib/Yap.php');
+require('../../src/Yap.php');
 
-yap('YapHTTP', 'http');
+yap('YapRequest', 'http');
 yap('YapRouter', 'router');
 
 yap('router')->get('/', 'doGet');
