@@ -43,6 +43,9 @@ class YapRequest {
     foreach($this->options as $o)
     curl_setopt($this->ch, $o[0], $o[1]);
   }
+  public function destroy() {
+  	$this->__destruct();
+  }
   private function execute() {
     curl_setopt($this->ch, CURLOPT_RETURNTRANSFER, true);
     try{
