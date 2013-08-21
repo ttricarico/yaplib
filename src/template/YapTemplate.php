@@ -52,6 +52,7 @@ class YapTemplate{
   public function loadPageFooter($vars = array()) {
     $this->display($this->footer, $vars);
   }
+  
   public function setTemplateType($type) {
     $this->type = $type;
   }
