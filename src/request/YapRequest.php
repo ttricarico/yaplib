@@ -44,26 +44,23 @@ class YapRequest {
       ));
     }
   }
+  
   public function get($url, $dataToSend = array(), $options = null, $return = true) {
     $this->ch = curl_init();
     $this->url = $url.$this->generateQueryString($dataToSend);
-	curl_setopt($this->ch, CURLOPT_URL, $this->url);
+    curl_setopt($this->ch, CURLOPT_URL, $this->url);
     $this->setReturn($return);
     $this->setOptions($options);
-    $response = curl_exec($this->ch);
-    if(!$response) {
-      $this->checkSecure($url);
-      $response = curl_exec($this->ch);
-      if(!$response) {
-        throw new Exception('Could not process request, curl responded with: '.curl_error($this->ch));	
-      }
-    }
-	
-    curl_close($this->ch);
-	return $response;
+    return $this->execute();
   }
   public function post($url, $dataToSend = array(), $options = array(), $return = true) {
+    $this->ch = curl_init();
+    curl_setopt($this->ch, CURLOPT_URL, $this->url);
     $this->setReturn($return);
+    $this->setOptions($options);
+    curl_setopt($this->ch, CURLOPT_POSTFIELDS, $dataToSend);
+    
+    return $this->execute();
   }
 
   /**
@@ -83,13 +80,26 @@ class YapRequest {
     
     return $temp;
   }
-  private function generatePostFields($dataToSend = array()) {
-    
-  }
   private function setReturn($return){
     if($return)
       curl_setopt($this->ch, CURLOPT_RETURNTRANSFER, true);
     else
       curl_setopt($this->ch, CURLOPT_RETURNTRANSFER, false);
+  }
+  private function execute() {
+    curl_exec($this->ch);
+    if(!$response) {
+      $this->checkSecure($url);
+      $response = curl_exec($this->ch);
+      if(!$response) {
+        throw new Exception('Could not process request, curl responded with: '.curl_error($this->ch));  
+      }
+    }
+    return $response;
+  }
+  
+  public function reset() {
+    curl_close($this->ch);
+    return true;
   }
 }
