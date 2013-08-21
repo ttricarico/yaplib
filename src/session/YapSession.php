@@ -33,5 +33,12 @@ class YapSession implements SessionInterface {
       unset($this->session);
     }
 	}
+  public function checkIfExists($key) {
+    if(isset($this->session[$key])) 
+      return true;
+    
+    else
+      return false;
+  }
 	
 }
