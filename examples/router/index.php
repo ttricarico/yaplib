@@ -15,3 +15,5 @@ echo count($router->getRouteTable());
 echo "\n\n";
 $router->run();
 echo "\n";
+
+yap()->end();
