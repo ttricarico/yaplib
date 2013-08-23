@@ -2,18 +2,18 @@
 
 class YapHeader implements HeaderInterface {
 	
-	public static final $httpCodes = array(200 => 'OK',
-	                                       307 => 'Temporary Redirect',
-    																		 401 => 'Unauthorized',
-    																		 403 => 'Forbidden',
-    																		 404 => 'Not Found',
-    																		 420 => 'Enhance Your Calm',
-    																		 500 => 'Internal Server Error');
+  public static $httpCodes = array(200 => 'OK',
+                                   307 => 'Temporary Redirect',
+                                   401 => 'Unauthorized',
+                                   403 => 'Forbidden',
+                                   404 => 'Not Found',
+                                   420 => 'Enhance Your Calm',
+                                   500 => 'Internal Server Error');
 																		
-	public static final $contentTypes = array('text' => 'text/plain',
-    																			  'html' => 'text/html',
-    																			  'javascript' => 'application/javascript',
-    																			  'json' => 'application/json');
+  public static $contentTypes = array('text' => 'text/plain',
+                                      'html' => 'text/html',
+                                      'javascript' => 'application/javascript',
+                                      'json' => 'application/json');
 	
   private $httpCode, $contentType;
   private $otherHeaders = array();
@@ -50,5 +50,9 @@ class YapHeader implements HeaderInterface {
   
   public function setCustomHeader($header) {
     $this->otherHeaders[] = $header;
+  }
+  
+  public function setHTTPCode($code) {
+  	$this->httpCode = $code;
   }
 }
