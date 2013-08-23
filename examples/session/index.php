@@ -5,13 +5,16 @@ include_once('../../src/Yap.php');
 
 $session = yap('YapSession');
 
-if($session->get('counter')) 
+if($session->get('counter')) { 
 	$counter = $session->get('counter') + 1;
-
-else
+}
+else {
 	$counter = 1;
+}
 
 $session->set('counter', $counter);
 
 
 echo $session->get('counter');
+
+yap()->end();

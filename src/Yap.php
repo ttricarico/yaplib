@@ -95,6 +95,28 @@ class Yap {
     unset($this->registered_modules[$instance_name]);
     return true;
   }
+
+  /**
+    destruct should be called implictly at the end of the request
+  */
+  public function __destruct()  {
+    $this->end();
+  }
+
+  /** 
+    if you want to explicitly unset all registered_modules, you can 
+    call yap()->end().
+    implement __destruct in your module, and it will be called from here.
+  */
+  public function end() {
+    //echo count($this->registered_modules);
+    foreach ($this->registered_modules as $k=>&$o) { 
+      //print_r($k  . "=>"); print_r($o);
+      unset($o);
+    }
+    unset($this->registered_modules);
+    $this->registered_modules = array();
+  }
   
 }
 
