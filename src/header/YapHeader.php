@@ -36,7 +36,7 @@ class YapHeader implements HeaderInterface {
   }
   
   public function redirect($redirectUrl) {
-    $this->httpCode = 307;
+    $this->httpCode = 302;
     $this->contentType = null;
     $this->otherHeaders[] = 'Location: '.$redirectUrl;
     $this->sendHeaders();
