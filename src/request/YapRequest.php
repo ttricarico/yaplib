@@ -4,13 +4,8 @@ class YapRequest {
     
   const GET = 'GET';
   const POST = 'POST';
-  
-  /** not implemented
   const PUT = 'PUT';
   const DELETE = 'DELETE';
-  const HEAD = 'HEAD'; 
-  const OPTIONS = 'OPTIONS';
-  **/
   
   private $ch;
   private $url;
@@ -56,6 +51,27 @@ class YapRequest {
   public function post($url, $dataToSend = array(), $options = array(), $return = true) {
     $this->ch = curl_init();
     curl_setopt($this->ch, CURLOPT_URL, $this->url);
+	curl_setopt($this->ch, CURLOPT_POST, true);
+    $this->setReturn($return);
+    $this->setOptions($options);
+    curl_setopt($this->ch, CURLOPT_POSTFIELDS, $dataToSend);
+    
+    return $this->execute();
+  }
+  public function put($url, $dataToSend = array(), $options = array(), $return = true) {
+  	$this->ch = curl_init();
+    curl_setopt($this->ch, CURLOPT_URL, $this->url);
+	curl_setopt($this->ch, CURLOPT_PUT, true);
+    $this->setReturn($return);
+    $this->setOptions($options);
+    curl_setopt($this->ch, CURLOPT_POSTFIELDS, $dataToSend);
+    
+    return $this->execute();
+  }
+  public function delete($url, $dataToSend = array(), $options = array(), $return = true) {
+  	$this->ch = curl_init();
+    curl_setopt($this->ch, CURLOPT_URL, $this->url);
+	curl_setopt($this->ch, CURLOPT_CUSTOMREQUEST, 'DELETE');
     $this->setReturn($return);
     $this->setOptions($options);
     curl_setopt($this->ch, CURLOPT_POSTFIELDS, $dataToSend);
