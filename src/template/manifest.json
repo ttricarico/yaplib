@@ -1,0 +1,9 @@
+{
+  "name":"YapTemplate",
+  "description":"A very simple way to display templates and pages",
+  "author":"Yaplib Team",
+  "version":"1.0",
+  "src":["YapTemplate.php"],
+  "dependencies":[],
+  "options":[]
+}
