@@ -1,8 +1,8 @@
 <?php
 
 interface UsersInterface {
-  public function login();
+  public function login($user, $password);
   public function logout();
   public function isLoggedIn();
-  public function addUser();
+  public function addUser($user, $password);
 }

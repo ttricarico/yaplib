@@ -1,0 +1,9 @@
+{
+  "name":"YapUsers",
+  "description":"A shim for those precious Users",
+  "author":"Yaplib Team",
+  "version":"1.0",
+  "src":["YapUsers.php"],
+  "dependencies":["YapSession"],
+  "options":[]
+}
