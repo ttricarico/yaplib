@@ -1,4 +1,4 @@
-<?php 
+<?php
 class YapRouter implements RouterInterface {
   const httpGet = 'GET';
   const httpPost = 'POST';
@@ -35,7 +35,7 @@ class YapRouter implements RouterInterface {
 
   public function run($path = false, $httpMethod = null) {
     if ($path === false) {
-      $path = isset($_REQUEST[$this->routeKey]) ? $_REQUEST[$this->routeKey] : '/'; 
+      $path = isset($_REQUEST[$this->routeKey]) ? $_REQUEST[$this->routeKey] : '/';
     }
     if ($httpMethod === null) {
       $httpMethod = isset($_SERVER['REQUEST_METHOD']) ? $_SERVER['REQUEST_METHOD'] : self::httpGet;
@@ -43,7 +43,7 @@ class YapRouter implements RouterInterface {
 
     $route = $this->getRoute($path, $httpMethod);
     // anything that echo's will be buffered
-    // need to decide a common workflow/model for 
+    // need to decide a common workflow/model for
     // 'echo' vs. 'return'
     ob_start();
     $response = call_user_func_array($route['callback'], $route['arguments']);
@@ -69,6 +69,15 @@ class YapRouter implements RouterInterface {
   public function getRouteTable() {
     $r = $this->routes;
     return $r; // this is a copy
+  }
+
+  public function getPath() {
+    $path = isset($_REQUEST[$this->routeKey]) ? $_REQUEST[$this->routeKey] : '/';
+    foreach($this->regexes as $i=>$regex) {
+      if(preg_match($regex, $path, $arguments)) {
+        return $arguments[0];
+      }
+    }
   }
 
   private function getRoute($path = false, $httpMethod = null) {
@@ -100,11 +109,10 @@ class YapRouter implements RouterInterface {
   }
 
   private function addRoute($path, $callback, $method, $json) {
-    $this->routes[] = array(  'httpMethod'=>$method, 
-                              'path'=>$path, 
+    $this->routes[] = array(  'httpMethod'=>$method,
+                              'path'=>$path,
                               'callback'=>$callback,
                               'json'=>$json);
     $this->regexes[] = "#^{$path}\$#";
   }
 }
-
